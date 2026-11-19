@@ -1,0 +1,48 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { getCollection } from 'astro:content';
+import { PAIR_TYPES } from '../lib/pairs';
+import './dashboard.css';
+
+const docs = await getCollection('docs');
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const modules = docs
+	.filter((d) => /^module-\d+$/.test(d.id))
+	.map((m) => ({ id: m.id, num: Number(m.id.split('-')[1]), title: m.data.title, semester: m.data.semester ?? 'Інше' }))
+	.sort((a, b) => a.num - b.num);
+
+const SHORT = { lecture: 'Л', practice: 'П', self: 'С', homework: 'ДЗ' };
+const counters = new Map<string, number>();
+const pairs = docs
+	.filter((d) => d.data.type && d.id.includes('/'))
+	.sort((a, b) => (a.data.pair ?? 999) - (b.data.pair ?? 999) || a.id.localeCompare(b.id))
+	.map((d) => {
+		const module = d.id.split('/')[0];
+		const key = `${module}:${d.data.type}`;
+		const n = (counters.get(key) ?? 0) + 1;
+		counters.set(key, n);
+		const t = PAIR_TYPES[d.data.type!];
+		return {
+			id: d.id,
+			module,
+			title: d.data.title,
+			type: d.data.type,
+			label: t.label,
+			short: SHORT[d.data.type!],
+			n,
+			variant: t.variant,
+			href: `${base}/${d.id}/`,
+		};
+	});
+
+const meta = JSON.stringify({ modules, pairs }).replace(/</g, '\\u003c');
+---
+
+<StarlightPage frontmatter={{ title: 'Дашборд', template: 'splash', pagefind: false, prev: false, next: false }}>
+	<div id="dash" class="not-content"><p class="muted">Завантаження…</p></div>
+	<script type="application/json" id="dash-meta" set:html={meta} />
+	<script>
+		import './app.js';
+	</script>
+</StarlightPage>

@@ -1,0 +1,56 @@
+---
+/** Картки модулів для головної, згруповані за семестрами. Підхоплює всі папки module-N автоматично. */
+import { Icon } from '@astrojs/starlight/components';
+import { getModules, getPairs, countByType, PAIR_TYPES, type PairType } from '../lib/pairs';
+
+const modules = await Promise.all(
+	(await getModules()).map(async (m) => {
+		const pairs = (await getPairs(m.id)).filter((p) => p.id !== m.id);
+		return { m, total: pairs.length, counts: countByType(pairs) };
+	})
+);
+
+const semesters = new Map<string, typeof modules>();
+for (const mod of modules) {
+	const key = mod.m.data.semester ?? 'Інше';
+	if (!semesters.has(key)) semesters.set(key, []);
+	semesters.get(key)!.push(mod);
+}
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="semesters not-content">
+	{
+		[...semesters].map(([semester, list]) => (
+			<section class="semester">
+				<h3 class="semester-title">{semester}</h3>
+				<div class="modules-grid">
+					{list.map(({ m, total, counts }) => (
+						<a class:list={['module-card', { 'module-card--empty': total === 0 }]} href={`${base}/${m.id}/`}>
+							<span class="module-num">Модуль {m.id.split('-')[1]}</span>
+							<span class="module-title">{m.data.title}</span>
+							{m.data.description && <span class="module-desc">{m.data.description}</span>}
+							<span class="module-stats">
+								{total === 0 ? (
+									<span class="chip chip--sm">Скоро</span>
+								) : (
+									<>
+										<span class="chip chip--sm">{total} занять</span>
+										{(Object.keys(PAIR_TYPES) as PairType[])
+											.filter((k) => counts[k])
+											.map((k) => (
+												<span class={`chip chip--sm chip--${PAIR_TYPES[k].variant}`}>
+													{PAIR_TYPES[k].short} · {counts[k]}
+												</span>
+											))}
+									</>
+								)}
+							</span>
+							<Icon name="right-arrow" class="module-arrow" />
+						</a>
+					))}
+				</div>
+			</section>
+		))
+	}
+</div>

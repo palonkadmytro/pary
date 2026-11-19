@@ -1,0 +1,483 @@
+/* ===== Тема ===== */
+:root {
+	--sl-font: 'Inter Variable', system-ui, -apple-system, sans-serif;
+	--sl-font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+	/* темна тема (за замовчуванням у Starlight) */
+	--sl-color-accent-low: #2a1f4d;
+	--sl-color-accent: #8b5cf6;
+	--sl-color-accent-high: #ddd6fe;
+	--sl-color-white: #f5f5f7;
+	--sl-color-gray-1: #e4e4e7;
+	--sl-color-gray-2: #c4c4cc;
+	--sl-color-gray-3: #9b9ba6;
+	--sl-color-gray-4: #5d5d68;
+	--sl-color-gray-5: #34343c;
+	--sl-color-gray-6: #1c1c22;
+	--sl-color-black: #111115;
+
+	--radius: 14px;
+	--card-bg: color-mix(in srgb, var(--sl-color-gray-6) 70%, transparent);
+	--card-border: color-mix(in srgb, var(--sl-color-gray-5) 80%, transparent);
+	--glow: 0 0 0 1px color-mix(in srgb, var(--sl-color-accent) 45%, transparent),
+		0 10px 30px -10px color-mix(in srgb, var(--sl-color-accent) 45%, transparent);
+
+	--c-note: #60a5fa;
+	--c-success: #34d399;
+	--c-caution: #fbbf24;
+	--c-danger: #f87171;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #ede9fe;
+	--sl-color-accent: #7c3aed;
+	--sl-color-accent-high: #4c1d95;
+	--sl-color-white: #111115;
+	--sl-color-gray-1: #27272a;
+	--sl-color-gray-2: #3f3f46;
+	--sl-color-gray-3: #63636e;
+	--sl-color-gray-4: #a1a1aa;
+	--sl-color-gray-5: #e4e4e7;
+	--sl-color-gray-6: #f4f4f5;
+	--sl-color-gray-7: #fafafa;
+	--sl-color-black: #ffffff;
+	--card-bg: #ffffff;
+
+	--c-note: #2563eb;
+	--c-success: #059669;
+	--c-caution: #d97706;
+	--c-danger: #dc2626;
+}
+
+/* ===== Загальне ===== */
+body {
+	font-feature-settings: 'cv11', 'ss01';
+	-webkit-font-smoothing: antialiased;
+}
+
+.header {
+	backdrop-filter: saturate(160%) blur(14px);
+	background-color: color-mix(in srgb, var(--sl-color-bg-nav) 78%, transparent);
+}
+
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+h1#_top {
+	letter-spacing: -0.02em;
+}
+
+.sl-markdown-content :not(pre) > code {
+	border-radius: 6px;
+	padding: 0.1em 0.4em;
+	background: var(--sl-color-accent-low);
+	color: var(--sl-color-accent-high);
+	border: none;
+}
+
+.sl-markdown-content pre,
+.expressive-code .frame {
+	border-radius: 12px !important;
+}
+
+.sl-markdown-content table {
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.sl-markdown-content blockquote {
+	border-inline-start-color: var(--sl-color-accent);
+}
+
+/* ===== Sidebar — мінімалістичний ===== */
+.sidebar-content {
+	--sb-muted: var(--sl-color-gray-3);
+	--sb-text: var(--sl-color-gray-2);
+}
+.sidebar-content ul ul {
+	border-inline-start-color: color-mix(in srgb, var(--sl-color-gray-5) 60%, transparent);
+}
+.sidebar-content a,
+.sidebar-content summary {
+	padding-block: 0.28rem;
+}
+/* всі пункти — звичайний текст */
+.sidebar-content .large,
+.sidebar-content a,
+.sidebar-content .group-label span {
+	font-size: 0.875rem;
+	font-weight: 400;
+	color: var(--sb-text);
+	line-height: 1.4;
+}
+/* семестри — маленькі підписи */
+.sidebar-content ul.top-level > li > details > summary .large {
+	font-size: 0.7rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--sb-muted);
+}
+.sidebar-content ul.top-level > li > details {
+	margin-top: 0.9rem;
+}
+/* модулі */
+.sidebar-content details details > summary .large {
+	font-weight: 500;
+	color: var(--sb-text);
+}
+.sidebar-content details details[open] > summary .large {
+	color: var(--sl-color-white);
+}
+.sidebar-content .caret {
+	--sl-icon-size: 1rem !important;
+	color: var(--sl-color-gray-4);
+}
+.sidebar-content a:hover,
+.sidebar-content summary:hover .large {
+	color: var(--sl-color-white);
+}
+/* поточна сторінка — легкий фон замість суцільної заливки */
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover {
+	background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+	color: var(--sl-color-accent-high);
+	font-weight: 500;
+	border-radius: 6px;
+}
+.sidebar-content a[aria-current='page'] > span:not(.sl-badge) {
+	color: var(--sl-color-accent-high);
+}
+
+/* Пари в меню: «• Лекція 1  Назва…» — в один рядок, без заливки */
+.sidebar-content a.pair-link {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.sidebar-content a.pair-link > .sl-badge {
+	--c: var(--sl-color-gray-3);
+	order: -1;
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	min-width: 5.4rem;
+	margin: 0;
+	padding: 0;
+	background: none;
+	border: none;
+	font-family: var(--sl-font);
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: var(--c);
+}
+.sidebar-content a.pair-link > .sl-badge::before {
+	content: '';
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: currentColor;
+}
+.sidebar-content a.pair-link > .sl-badge.note { --c: var(--c-note); }
+.sidebar-content a.pair-link > .sl-badge.success { --c: var(--c-success); }
+.sidebar-content a.pair-link > .sl-badge.caution { --c: var(--c-caution); }
+.sidebar-content a.pair-link > .sl-badge.danger { --c: var(--c-danger); }
+.sidebar-content a.pair-link > span:not(.sl-badge) {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Hero на головній */
+.hero h1 {
+	background: linear-gradient(120deg, var(--sl-color-white) 30%, var(--sl-color-accent) 70%, #06b6d4);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	letter-spacing: -0.03em;
+}
+
+/* ===== Чіпи ===== */
+.chip {
+	--c: var(--sl-color-gray-3);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.25rem 0.7rem;
+	font-size: 0.82rem;
+	font-weight: 500;
+	line-height: 1.3;
+	border-radius: 999px;
+	color: var(--c);
+	background: color-mix(in srgb, var(--c) 12%, transparent);
+	border: 1px solid color-mix(in srgb, var(--c) 28%, transparent);
+	white-space: nowrap;
+}
+.chip--sm {
+	padding: 0.1rem 0.55rem;
+	font-size: 0.74rem;
+}
+.chip--note { --c: var(--c-note); }
+.chip--success { --c: var(--c-success); }
+.chip--caution { --c: var(--c-caution); }
+.chip--danger { --c: var(--c-danger); }
+
+/* ===== Мета-інформація під заголовком ===== */
+.pair-meta,
+.pair-files {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+.file-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	padding: 0.45rem 0.85rem;
+	font-size: 0.85rem;
+	font-weight: 500;
+	text-decoration: none;
+	color: var(--sl-color-white);
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: 10px;
+	transition: border-color 0.15s, transform 0.15s;
+}
+.file-link:hover {
+	border-color: var(--sl-color-accent);
+	transform: translateY(-1px);
+}
+
+/* ===== Огляд модуля ===== */
+.module-overview {
+	margin-top: 1.5rem;
+}
+.filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	margin-bottom: 1rem;
+}
+.filter {
+	--c: var(--sl-color-accent);
+	font: inherit;
+	font-size: 0.85rem;
+	font-weight: 500;
+	padding: 0.4rem 0.85rem;
+	border-radius: 999px;
+	cursor: pointer;
+	color: var(--sl-color-gray-2);
+	background: transparent;
+	border: 1px solid var(--card-border);
+	transition: all 0.15s;
+}
+.filter span {
+	opacity: 0.6;
+	margin-inline-start: 0.2rem;
+}
+.filter:hover {
+	border-color: var(--c);
+	color: var(--sl-color-white);
+}
+.filter.is-active {
+	color: var(--c);
+	border-color: color-mix(in srgb, var(--c) 50%, transparent);
+	background: color-mix(in srgb, var(--c) 12%, transparent);
+}
+.filter--note { --c: var(--c-note); }
+.filter--success { --c: var(--c-success); }
+.filter--caution { --c: var(--c-caution); }
+.filter--danger { --c: var(--c-danger); }
+
+.pair-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 0.6rem;
+}
+.pair-card {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.9rem 1.1rem;
+	text-decoration: none;
+	color: inherit;
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: var(--radius);
+	transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+.pair-card:hover {
+	box-shadow: var(--glow);
+	border-color: transparent;
+	transform: translateY(-1px);
+}
+.pair-icon {
+	--c: var(--sl-color-accent);
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 2.6rem;
+	height: 2.6rem;
+	border-radius: 12px;
+	color: var(--c);
+	background: color-mix(in srgb, var(--c) 14%, transparent);
+}
+.pair-icon--note { --c: var(--c-note); }
+.pair-icon--success { --c: var(--c-success); }
+.pair-icon--caution { --c: var(--c-caution); }
+.pair-icon--danger { --c: var(--c-danger); }
+.pair-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	min-width: 0;
+	flex: 1;
+}
+.pair-top {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.78rem;
+	color: var(--sl-color-gray-3);
+}
+.pair-num {
+	font-family: var(--sl-font-mono);
+	font-weight: 600;
+	color: var(--sl-color-gray-2);
+}
+.pair-date--danger {
+	color: var(--c-danger);
+}
+.pair-title {
+	font-weight: 600;
+	font-size: 1rem;
+	color: var(--sl-color-white);
+}
+.pair-desc {
+	font-size: 0.875rem;
+	color: var(--sl-color-gray-3);
+}
+.pair-arrow {
+	flex: none;
+	color: var(--sl-color-gray-4);
+	transition: transform 0.2s, color 0.2s;
+}
+.pair-card:hover .pair-arrow {
+	color: var(--sl-color-accent);
+	transform: translateX(3px);
+}
+.empty {
+	color: var(--sl-color-gray-3);
+	padding: 2rem;
+	text-align: center;
+	border: 1px dashed var(--card-border);
+	border-radius: var(--radius);
+}
+
+/* ===== Сітка модулів ===== */
+.modules-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+.module-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.4rem;
+	min-height: 11rem;
+	text-decoration: none;
+	color: inherit;
+	background:
+		radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--sl-color-accent) 14%, transparent), transparent 60%),
+		var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: 18px;
+	overflow: hidden;
+	transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+.module-card:hover {
+	box-shadow: var(--glow);
+	border-color: transparent;
+	transform: translateY(-2px);
+}
+.module-num {
+	font-family: var(--sl-font-mono);
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--sl-color-accent);
+}
+.module-title {
+	font-size: 1.2rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	color: var(--sl-color-white);
+}
+.module-desc {
+	font-size: 0.9rem;
+	color: var(--sl-color-gray-3);
+}
+.module-stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	margin-top: auto;
+	padding-top: 0.5rem;
+}
+.module-arrow {
+	position: absolute;
+	top: 1.4rem;
+	right: 1.4rem;
+	color: var(--sl-color-gray-4);
+	transition: transform 0.2s, color 0.2s;
+}
+.module-card:hover .module-arrow {
+	color: var(--sl-color-accent);
+	transform: translateX(3px);
+}
+.semester + .semester {
+	margin-top: 2.5rem;
+}
+.semester-title {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--sl-color-gray-3);
+	margin: 0;
+}
+.semester-title::after {
+	content: '';
+	flex: 1;
+	height: 1px;
+	background: var(--card-border);
+}
+.semester .modules-grid {
+	margin-top: 1rem;
+}
+.module-card--empty {
+	background: var(--card-bg);
+}
+.module-card--empty .module-title {
+	color: var(--sl-color-gray-2);
+}
+.module-card--ghost {
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	background: transparent;
+	border-style: dashed;
+	color: var(--sl-color-gray-3);
+}

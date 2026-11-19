@@ -1,0 +1,78 @@
+---
+/**
+ * Список усіх пар модуля з фільтром за типом.
+ * Використання в module-N/index.mdx:  <ModuleOverview module="module-1" />
+ */
+import { Icon } from '@astrojs/starlight/components';
+import { getPairs, countByType, PAIR_TYPES, formatDate, type PairType } from '../lib/pairs';
+
+interface Props {
+	module: string;
+}
+const { module } = Astro.props;
+const pairs = (await getPairs(module)).filter((p) => p.id !== module);
+const counts = countByType(pairs);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="module-overview not-content" data-module-overview>
+	<div class="filters" role="tablist">
+		<button class="filter is-active" data-filter="all">Усі <span>{pairs.length}</span></button>
+		{
+			(Object.keys(PAIR_TYPES) as PairType[])
+				.filter((k) => counts[k])
+				.map((k) => (
+					<button class={`filter filter--${PAIR_TYPES[k].variant}`} data-filter={k}>
+						{PAIR_TYPES[k].plural} <span>{counts[k]}</span>
+					</button>
+				))
+		}
+	</div>
+
+	{pairs.length === 0 && <p class="empty">Тут поки порожньо — пари з'являться незабаром.</p>}
+
+	<ol class="pair-list">
+		{
+			pairs.map((p) => {
+				const t = p.data.type ? PAIR_TYPES[p.data.type] : undefined;
+				return (
+					<li data-type={p.data.type ?? 'other'}>
+						<a class="pair-card" href={`${base}/${p.id}/`}>
+							<span class={`pair-icon ${t ? `pair-icon--${t.variant}` : ''}`}>
+								<Icon name={(t?.icon ?? 'document') as any} size="1.25rem" />
+							</span>
+							<span class="pair-body">
+								<span class="pair-top">
+									{p.data.pair && <span class="pair-num">#{p.data.pair}</span>}
+									{p.data.topic && <span class="pair-date">Тема {p.data.topic}</span>}
+									{t && <span class={`chip chip--${t.variant} chip--sm`}>{t.label}</span>}
+									{p.data.date && <span class="pair-date">{formatDate(p.data.date)}</span>}
+									{p.data.deadline && (
+										<span class="pair-date pair-date--danger">до {formatDate(p.data.deadline)}</span>
+									)}
+								</span>
+								<span class="pair-title">{p.data.title}</span>
+								{p.data.description && <span class="pair-desc">{p.data.description}</span>}
+							</span>
+							<Icon name="right-arrow" class="pair-arrow" />
+						</a>
+					</li>
+				);
+			})
+		}
+	</ol>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-module-overview]').forEach((root) => {
+		const buttons = root.querySelectorAll<HTMLButtonElement>('[data-filter]');
+		const items = root.querySelectorAll<HTMLElement>('.pair-list > li');
+		buttons.forEach((btn) =>
+			btn.addEventListener('click', () => {
+				buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+				const f = btn.dataset.filter;
+				items.forEach((li) => (li.hidden = f !== 'all' && li.dataset.type !== f));
+			})
+		);
+	});
+</script>

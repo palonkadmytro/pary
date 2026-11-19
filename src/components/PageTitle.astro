@@ -1,0 +1,52 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import { Icon } from '@astrojs/starlight/components';
+import { PAIR_TYPES, formatDate } from '../lib/pairs';
+
+const { data } = Astro.locals.starlightRoute.entry;
+const t = data.type ? PAIR_TYPES[data.type] : undefined;
+const hasMeta = t || data.pair || data.date || data.deadline || data.teacher || data.files?.length;
+---
+
+<Default />
+
+{
+	hasMeta && (
+		<div class="pair-meta not-content">
+			{t && (
+				<span class={`chip chip--${t.variant}`}>
+					<Icon name={t.icon as any} size="1rem" />
+					{t.label}
+				</span>
+			)}
+			{data.pair && <span class="chip">Пара №{data.pair}</span>}
+			{data.topic && <span class="chip">Тема {data.topic}</span>}
+			{data.date && (
+				<span class="chip">
+					<Icon name="seti:clock" size="1rem" />
+					{formatDate(data.date)}
+				</span>
+			)}
+			{data.teacher && <span class="chip">{data.teacher}</span>}
+			{data.deadline && (
+				<span class="chip chip--danger">
+					<Icon name="warning" size="1rem" />
+					Дедлайн: {formatDate(data.deadline)}
+				</span>
+			)}
+		</div>
+	)
+}
+
+{
+	data.files?.length ? (
+		<div class="pair-files not-content">
+			{data.files.map((f) => (
+				<a class="file-link" href={f.href} target="_blank" rel="noopener">
+					<Icon name="download" size="1rem" />
+					{f.label}
+				</a>
+			))}
+		</div>
+	) : null
+}
