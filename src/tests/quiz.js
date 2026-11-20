@@ -83,8 +83,21 @@ function save() {
 // ---------- відображення ----------
 const TAG_RE = /<(\w+)[^<>]*>[^<]*<\/\1>|<[!/]?[\w-]+[^<>]*>/g;
 
-/** Текст питання: фрагменти HTML-коду показуємо як <code>. */
+/**
+ * Текст питання: фрагменти HTML-коду показуємо як <code>.
+ * Фрагмент у `зворотних лапках` показується цілим; інакше теги виділяються автоматично.
+ */
 function renderText(el, text) {
+	if (text.includes('`')) {
+		text.split('`').forEach((part, i) => {
+			if (i % 2) {
+				const code = document.createElement('code');
+				code.textContent = part;
+				el.append(code);
+			} else el.append(part);
+		});
+		return;
+	}
 	let last = 0;
 	for (const m of text.matchAll(TAG_RE)) {
 		el.append(text.slice(last, m.index));
