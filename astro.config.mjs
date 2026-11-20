@@ -79,6 +79,7 @@ export default defineConfig({
 			routeMiddleware: './src/routeData.ts',
 			sidebar: [
 				{ label: 'Головна', link: '/' },
+				{ label: 'Тести', link: '/tests/' },
 				// дашборд видно в меню лише локально
 				...(isDev ? [{ label: 'Дашборд', link: '/dashboard/' }] : []),
 				...moduleSidebar(),

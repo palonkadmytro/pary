@@ -1,0 +1,52 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { testSets, type TestSet } from '../../tests/sets';
+import '../../tests/quiz.css';
+
+export function getStaticPaths() {
+	return testSets.map((set) => ({ params: { slug: set.slug }, props: { set } }));
+}
+
+const { set } = Astro.props as { set: TestSet };
+const data = JSON.stringify(set).replace(/</g, '\\u003c');
+---
+
+<StarlightPage
+	frontmatter={{
+		title: `Тест: ${set.title}`,
+		description: set.subtitle,
+		template: 'splash',
+		pagefind: false,
+		prev: false,
+		next: false,
+	}}
+>
+	<div id="quiz" class="quiz not-content">
+		{set.subtitle && <p class="quiz__subtitle">{set.subtitle}</p>}
+		<div class="quiz__toolbar">
+			<span class="quiz__progress" data-progress>Відкрито 0 з {set.cards}</span>
+			<div class="quiz__actions">
+				<button class="quiz-btn quiz-btn--primary" data-action="random">🎲 Випадкова картка</button>
+				<button class="quiz-btn" data-action="shuffle">🔀 Перемішати</button>
+				<button class="quiz-btn" data-action="reset">↺ Закрити всі</button>
+			</div>
+		</div>
+		<div class="quiz__grid" data-grid></div>
+
+		<dialog class="quiz-dialog" data-dialog>
+			<div class="quiz-dialog__head">
+				<span class="quiz-dialog__label">Картка</span>
+				<span class="quiz-dialog__num" data-num></span>
+			</div>
+			<ol class="quiz-dialog__list" data-list></ol>
+			<div class="quiz-dialog__foot">
+				<button class="quiz-btn" data-action="close">Закрити</button>
+				<button class="quiz-btn quiz-btn--primary" data-action="next">🎲 Наступна випадкова</button>
+			</div>
+		</dialog>
+	</div>
+	<script type="application/json" id="quiz-data" set:html={data} />
+	<script>
+		import '../../tests/quiz.js';
+	</script>
+</StarlightPage>

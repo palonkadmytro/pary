@@ -1,0 +1,26 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { testSets, questionCount } from '../../tests/sets';
+import '../../tests/quiz.css';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<StarlightPage
+	frontmatter={{ title: 'Тести', description: 'Картки з питаннями для опитування на парі', prev: false, next: false }}
+>
+	<p>Обери набір. Студент тягне картку, і на ній з'являються питання. Картки можна перемішати в будь-який момент.</p>
+	<div class="quiz-sets not-content">
+		{
+			testSets.map((s) => (
+				<a class="quiz-set" href={`${base}/tests/${s.slug}/`}>
+					<span class="quiz-set__title">{s.title}</span>
+					{s.subtitle && <span class="quiz-set__sub">{s.subtitle}</span>}
+					<span class="quiz-set__meta">
+						{s.cards} карток · по {s.perCard} питання · {questionCount(s)} питань у банку
+					</span>
+				</a>
+			))
+		}
+	</div>
+</StarlightPage>
